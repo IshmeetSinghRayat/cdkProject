@@ -1,0 +1,24 @@
+{
+  "name": "jobDescriptionAnalyzer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-cdk/assertions": "^1.204.0",
+    "@aws-cdk/aws-apigateway": "^1.204.0",
+    "@aws-cdk/aws-lambda": "^1.204.0",
+    "@aws-sdk/core": "^3.658.1",
+    "aws-cdk": "2.148.0",
+    "aws-sdk": "^2.1691.0",
+    "openai": "^4.65.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145"
+  }
+}
