@@ -1,96 +1,54 @@
-# CDK lambda development template
+# Job Description Analyzer API
 
-This is a CDK template to develop lambda functions in your isolated environment
+The Job Description Analyzer API extracts skill requirements from job descriptions, providing insights into the importance and proficiency level of each skill mentioned.
 
-# Why we need this?
+## Environment Variables
 
-When you are building a lambda function using CDK in a team, your functions get overriden by other developers functions when they deploy. By having isolated CDK environment which imports external resources (e.g. DynamoDB, S3), we can safely develop our lambda functions. Once you confirmed that your function is working properly in your environment, you can copy your code to your base CDK project.
+- `OPENAI_API_KEY`: Your OpenAI API key.
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID.
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key.
 
-<p align="center">
-<img src="https://user-images.githubusercontent.com/6277118/179318780-e5110421-f945-40fa-acdc-514b3945d32c.png" width=800px />
-</p>
+## Assumptions
 
-# How to use
+- The skills are inferred based on keywords like "Must have" (High importance) or "Nice to have" (Low importance).
+- Used API Gateway for interaction.
 
-1. Set your development Stack info
+## Deployment Instructions
 
-```
-new DevelopmentTemplateStack(app, `AppStack`, {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
-  tags: {
-    app: "tag",
-  },
-});
-```
+- Ensure you have AWS CDK installed (`npm install -g aws-cdk`)
+- Run `cdk deploy` to deploy the stack
 
-2. Add your external resources & lambda function
+## Testing Instructions
 
-```
-export class DevelopmentTemplateStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props);
-    // Reference your resouces
-    // See how to reference external resources https://docs.aws.amazon.com/cdk/v2/guide/resources.html
+- After deploying, send a POST request to the API Gateway URL with a job description in the body
 
-    const s3Bucket = s3.Bucket.fromBucketArn(this, 'MyBucket', 'arn:aws:s3:::my-bucket-name');
+## Screen shorts
 
-    // Set your lambda
-    cont yourLambda = new lambda_nodejs.NodejsFunction(this, "yourlambda", {
-      runtime: lambda.Runtime.NODEJS_18_X,
-      handler: "handler",
-      entry: path.join(`${__dirname}/../`, "functions", "yourlambda/index.ts"),
-      environment: {
-        BUCKET: props.s3Bucket.bucketName,
-      },
-    });
+![alt text](image-1.png)
 
-    props.s3Bucket.grantReadWrite(yourLambda);
+Result:
 
-  }
-}
-```
+1. Skill: English proficiency - Importance: High - Proficiency: Advanced
+2. Skill: Frontend UX/UI development - Importance: High - Proficiency: Advanced
+3. Skill: Creating UI and Animation - Importance: High - Proficiency: Advanced
+4. Skill: Experience in working for small teams or startups - Importance: High - Proficiency: Advanced
+5. Skill: Communication with stakeholders - Importance: High - Proficiency: Advanced
+6. Skill: Leading a team as
 
-3. Your lambda
+## Open AI Resources:
 
-- This project uses pnpm workspace.
-- Add your function under `functions` (e.g. `functions/yourlambda/index.ts`)
-- you need to run `pnpm i` at the root of the project so that pnpm can recognize your function.
-- If you want add other dependencies, call `pnpm init` under `functions/yourlambda` then `pnpm add {dependecies you want to add}`
+1. https://pub.towardsai.net/openai-just-released-gpt-3-text-davinci-003-i-compared-it-with-002-the-results-are-impressive-dced9aed0cba
+2. https://platform.openai.com/docs/api-reference/authentication
 
-4. Deploy
+## AWS resources
 
-```
-pnpm cdk:deploy
-```
+1. https://docs.aws.amazon.com/cdk/v2/guide/environments.html
+2. Amazon Q and Chat GPT
+   Asked questions like
+3. how to configure Lamda with API Gateway
+4. Permissions required for DynamoDb, Lamda for AWS IAM users
 
-# Tips
+Links used:
 
-### Accessing lambda layer
-
-You can use submodules to access the lambda layer
-
-```
-git submodule add git@github.com:yourproject/main-cdk.git main-cdk
-```
-
-Then add the path in `tsconfig.json`
-
-```
-{
-  ...
-      "paths": {
-      "/opt/nodejs/s3": ["main-cdk/functions/layers/awsservice/nodejs/s3"]
-    }
-}
-```
-
-and when you update submodule
-
-```
-git submodule update --recursive --remote --merge
-```
-
-https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-core/
+1. https://docs.aws.amazon.com/cdk/v2/guide/environments.html
+2. https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-core/
